@@ -11,7 +11,7 @@ class shopView(viewsets.ModelViewSet):
     serializer_class=shopModelSerializer
     queryset=shopModel.objects.all()
     filter_backends=[SearchFilter]
-    search_fields=['name']
+    search_fields=['market__id','name']
 
     # # set permisson
     # only admin can do all operation
@@ -38,7 +38,7 @@ class ItemView(viewsets.ModelViewSet):
     queryset = ItemModel.objects.all()
     serializer_class = itemModelSerializer
     filter_backends=[SearchFilter]
-    search_fields=['name','discription','category']
+    search_fields=['shop__id','name','discription','category']
 
     def get_permissions(self):
         # Anyone can read (GET)
