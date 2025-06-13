@@ -3,7 +3,10 @@ from .models import shopModel,ItemModel
 from django.utils.html import format_html
 # Register your models here.
 
-admin.site.register(shopModel)
+@admin.register(shopModel)
+class ShopModelAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['owner'] 
+    search_fields=['name','contact_number']
 
 
 @admin.register(ItemModel)

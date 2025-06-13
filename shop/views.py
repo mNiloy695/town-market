@@ -6,6 +6,7 @@ from .serializers import shopModelSerializer,itemModelSerializer
 from .models import shopModel,ItemModel
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+from django_filters.rest_framework import DjangoFilterBackend
 
 class shopView(viewsets.ModelViewSet):
     serializer_class=shopModelSerializer
@@ -37,8 +38,9 @@ class IsOwnerPermission(permissions.BasePermission):
 class ItemView(viewsets.ModelViewSet):
     queryset = ItemModel.objects.all()
     serializer_class = itemModelSerializer
-    filter_backends=[SearchFilter]
-    search_fields=['shop__id','name','discription','category']
+    filter_backends=[DjangoFilterBackend,SearchFilter]
+    filterset_fields = ['shop']
+    search_fields=['name','discription','category']
 
     def get_permissions(self):
         # Anyone can read (GET)

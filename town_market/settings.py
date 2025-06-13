@@ -13,10 +13,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+import environ
+env = environ.Env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env()
 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
+AUTH_USER_MODEL="accounts.User"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -25,8 +32,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-64(xz4c$1g20pikhohyq5y1wqqb9o*&vf#-+*y2b!_7abqj-)u'
-
+SECRET_KEY=env("SECRET_KEY") 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -45,6 +51,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'market',
     'shop',
+    'django_filters',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -128,11 +136,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-    'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.PhoneBackend',        # your custom backend
+    'django.contrib.auth.backends.ModelBackend',  # fallback backend
 ]
 
-}
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  
+EMAIL_HOST_USER = env("EMAIL") 
+EMAIL_HOST_PASSWORD = env("PASSWORD")
+EMAIL_USE_TLS = True 
