@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'shop',
     'django_filters',
     'accounts',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +146,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 

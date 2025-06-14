@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 # Create your views here.
 from rest_framework import viewsets
-from  .serializers import RegistrationSerializer
+from  .serializers import RegistrationSerializer,LoginSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from django.contrib.auth.tokens import default_token_generator
@@ -11,10 +11,10 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.http import HttpResponse
 from rest_framework.response import Response
-
+from django.contrib.auth import authenticate,login,logout
 from  .models import User
 from rest_framework import permissions
-
+from rest_framework.authtoken.models import Token
 class isOwnerPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -67,7 +67,33 @@ def activate(request,uid64,token):
     return HttpResponse("Invalid link")
            
 
+class LoginView(APIView):
+    def post(self,request):
+        serializer=LoginSerializer(data=request.data)
+        if self.request.user.is_authenticated:
+             return Response({"message":"Authenticate user can not login"})
+        if serializer.is_valid():
+            phone=serializer.validated_data['phone']
+            password=serializer.validated_data['password']
+            print(phone , password)
+            try:
+                user=authenticate(request,phone=phone,password=password)
+               
+            except User.DoesNotExist:
+                user=None
+            
+            if user:
+                token,_=Token.objects.get_or_create(user=user)
+                login(request,user)
+                return Response({'token':token.key,'user_id':user.id,"is_staff":user.is_staff})
+            else:
+                return Response({'error':'invalid user'})
+        else:
+            return Response(serializer.errors)
 
-   
 
-
+class UserLogoutViewSet(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def post(self,request):
+        logout(request)
+        return Response({'detail':"Successfully logout"})

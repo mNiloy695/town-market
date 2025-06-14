@@ -7,8 +7,6 @@ from django.utils.html import format_html
 class ShopModelAdmin(admin.ModelAdmin):
     autocomplete_fields = ['owner'] 
     search_fields=['name','contact_number']
-
-
 @admin.register(ItemModel)
 class ItemModelAdmin(admin.ModelAdmin):
     list_display = ('name', 'shop', 'is_available', 'category', 'preview_image')

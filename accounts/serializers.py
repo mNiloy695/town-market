@@ -34,3 +34,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         accout.save()
         return accout
 
+
+class LoginSerializer(serializers.Serializer):
+    phone=serializers.CharField(required=True)
+    password=serializers.CharField(required=True)
