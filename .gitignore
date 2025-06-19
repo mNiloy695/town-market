@@ -1,1 +1,4 @@
 .env
+
+
+# for ssl verification problem i intall it :  pip install pip-system-certs  
