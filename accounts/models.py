@@ -11,5 +11,5 @@ class User(AbstractUser):
     role=models.CharField(max_length=20,default="Customer",choices=TYPE)
     def __str__(self):
         return f'{self.username}  {self.phone}'
-    # USERNAME_FIELD = 'phone'
+    USERNAME_FIELD = 'phone'
     # REQUIRED_FIELDS = ['phone']
